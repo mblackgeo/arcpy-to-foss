@@ -38,7 +38,7 @@ A valid GDAL/OGR installation is required, this can be achieved using your packa
 mkvirtualenv --python=/usr/bin/python3.8 arcpy2foss
 pip install -r requirements-dev.txt
 pip install -e .
-pre-commit init
+pre-commit install
 ```
 
 * [Pytest](https://docs.pytest.org/en/6.2.x/) is used for the functional tests of the application (see [`/tests`](tests/)).
