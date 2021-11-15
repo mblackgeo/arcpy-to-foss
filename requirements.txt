@@ -1,0 +1,4 @@
+fiona==1.8.20
+geopandas==0.10.2
+rasterio==1.2.10
+shapely==1.8.0
