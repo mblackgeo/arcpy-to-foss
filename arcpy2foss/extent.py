@@ -104,6 +104,10 @@ def extents_to_features(input_files: List[Path], output_file: Path, output_forma
     output_file : Path
         Path to output file (vector) that will be created with the bounding
         boxes of each file from ``input_files``. This will be in WGS84.
+        The CRS will be WGS-84.
+    output_format : str
+        The output format (or Driver) to use when writing ``output_file``.
+        See also `fiona.support_drivers`.
     """
     extents = []
     for fn in input_files:
