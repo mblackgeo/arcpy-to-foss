@@ -17,7 +17,7 @@ def test_get_extent_vector_wgs84(resources_dir: str):
 
 
 def test_get_extent_vector_non_wgs84(resources_dir: str):
-    # Vector already in EPSG:4326
+    # Vector in EPSG:32632
     fn = os.path.join(resources_dir, "vector_epsg32632.gpkg")
     result = get_extent(fn, as_wgs84=True)
     expected = box(9.94, 53.53, 9.95, 53.54)
@@ -50,8 +50,8 @@ def test_extents_to_features(resources_dir: str, tmp_path: Path):
     out_fn = tmp_path / "test.geojson"
 
     extents_to_features(files, out_fn, output_format="GeoJSON")
-    out = gpd.read_file(out_fn)
-
     assert os.path.exists(out_fn)
+
+    out = gpd.read_file(out_fn)
     assert "raster.tif" in out.filename.tolist()
     assert "vector.geojson" in out.filename.tolist()
