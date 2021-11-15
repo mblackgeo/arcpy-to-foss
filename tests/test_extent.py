@@ -48,6 +48,10 @@ def test_get_extent_invalid_file(resources_dir: str):
 def test_extents_to_features(resources_dir: str, tmp_path: Path):
     files = [os.path.join(resources_dir, f) for f in ["raster.tif", "vector.geojson"]]
     out_fn = tmp_path / "test.geojson"
+
     extents_to_features(files, out_fn, output_format="GeoJSON")
+    out = gpd.read_file(out_fn)
+
     assert os.path.exists(out_fn)
-    assert isinstance(gpd.read_file(out_fn), gpd.GeoDataFrame) is True
+    assert "raster.tif" in out.filename.tolist()
+    assert "vector.geojson" in out.filename.tolist()
