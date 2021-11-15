@@ -1,9 +1,11 @@
 import os
+from pathlib import Path
 
+import geopandas as gpd
 import pytest
 from shapely.geometry import box
 
-from arcpy2foss.extent import get_extent
+from arcpy2foss.extent import extents_to_features, get_extent
 
 
 def test_get_extent_vector_wgs84(resources_dir: str):
@@ -43,6 +45,9 @@ def test_get_extent_invalid_file(resources_dir: str):
         get_extent(os.path.join(resources_dir, "asdasd"))
 
 
-# TODO
-def test_extents_to_features():
-    pass
+def test_extents_to_features(resources_dir: str, tmp_path: Path):
+    files = [os.path.join(resources_dir, f) for f in ["raster.tif", "vector.geojson"]]
+    out_fn = tmp_path / "test.geojson"
+    extents_to_features(files, out_fn, output_format="GeoJSON")
+    assert os.path.exists(out_fn)
+    assert isinstance(gpd.read_file(out_fn), gpd.GeoDataFrame) is True
