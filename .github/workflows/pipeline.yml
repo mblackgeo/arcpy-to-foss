@@ -8,15 +8,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+
+      - uses: conda-incubator/setup-miniconda@v2
         with:
+          activate-environment: test
+          environment-file: environment.yml
           python-version: 3.8
+          auto-activate-base: false
 
       - name: Install dependencies
         run: |
-          sudo apt-get install -y g++ libev-dev
-          python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
 
