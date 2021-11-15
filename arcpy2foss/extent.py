@@ -1,3 +1,4 @@
+import os
 from modulefinder import Module
 from pathlib import Path
 from typing import Any, List
@@ -106,7 +107,7 @@ def extents_to_features(input_files: List[Path], output_file: Path, output_forma
     """
     extents = []
     for fn in input_files:
-        extents.append({"filename": fn, "geometry": get_extent(fn, as_wgs84=True)})
+        extents.append({"filename": os.path.basename(fn), "geometry": get_extent(fn, as_wgs84=True)})
 
     out = gpd.GeoDataFrame(extents, geometry="geometry", crs="EPSG:4326")
     out.to_file(output_file, driver=output_format)
