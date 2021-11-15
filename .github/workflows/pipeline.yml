@@ -34,7 +34,7 @@ jobs:
         run: black . --check
 
       - name: Check import order with isort
-        run: isort -c geocoder_app
+        run: isort -c arcpy2foss
 
       - name: Test with pytest
         run: pytest -v --cov
