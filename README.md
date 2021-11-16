@@ -27,7 +27,7 @@ Currently converted tools include:
 * [`vector-to-gpx`](arcpy2foss/gpx.py) is a conversion of [FeaturesToGPX](https://github.com/arcpy/sample-gp-tools/tree/master/FeaturesToGPX).
     * Takes a vector input file with either Point or LineString data and converts it to GPX (waypoints or tracks, respectively).
     * If the input vector contains Points geometry and a `Type` field with the value `TRKPT` it will be converted to a track instead of waypoints.
-* [`nearest-conditional-match`](arcpy2foss/nearest.py) is a conversion of [NearGroupBy](https://github.com/arcpy/sample-gp-tools/tree/master/NearByGroup).
+* [`nearest-conditional-match`](arcpy2foss/nearest.py) is a conversion of [NearByGroup](https://github.com/arcpy/sample-gp-tools/tree/master/NearByGroup).
     * Takes 2 vector input files and matches based on data in specific attributes and/or by distance.
 
 ## Development
