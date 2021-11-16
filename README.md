@@ -24,6 +24,9 @@ Currently converted tools include:
 * [`datasets_to_extent`](arcpy2foss/extent.py) is a conversion of [DatasetExtentToFeatures](https://github.com/arcpy/sample-gp-tools/tree/master/DatasetExtentToFeatures).
     * This takes any number of raster and vector sources as input and outputs a single vector (GeoJSON by default) containing the bounding box of each dataset
     * The output will always be in WGS-84 however any supported OGR format can be used (e.g. GeoPackage, GeoJSON, shapefile etc.)
+* [`vector_to_gpx`](arcpy2foss/gpx.py) is a conversion of [FeaturesToGPX](https://github.com/arcpy/sample-gp-tools/tree/master/FeaturesToGPX).
+    * Takes a vector input file with either Point or LineString data and converts it to GPX (waypoints or tracks, respectively).
+    * If the input vector contains Points geometry and a `Type` field with the value `TRKPT` it will be converted to a track instead of waypoints.
 
 ## Development
 
