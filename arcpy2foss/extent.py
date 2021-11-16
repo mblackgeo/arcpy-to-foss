@@ -1,7 +1,7 @@
 import os
 from modulefinder import Module
 from pathlib import Path
-from typing import List
+from typing import Iterable
 
 import fiona
 import geopandas as gpd
@@ -71,13 +71,13 @@ def get_extent(filename: Path, as_wgs84: bool = True) -> Polygon:
     raise NotImplementedError(f"Could not open file as either raster or vector: {filename}")
 
 
-def extents_to_features(input_files: List[Path], output_file: Path, output_format: str = "GeoJSON"):
+def extents_to_features(input_files: Iterable[Path], output_file: Path, output_format: str = "GeoJSON") -> None:
     """Create a new vector file that contains the bounding box extents of each
     given file in ``input_files``.
 
     Parameters
     ----------
-    input_files : List[Path]
+    input_files : Iterable[Path]
         List of input fiels (raster or vector)
     output_file : Path
         Path to output file (vector) that will be created with the bounding
