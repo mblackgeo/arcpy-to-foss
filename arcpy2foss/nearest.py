@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Iterable, Optional
 
 import geopandas as gpd
@@ -65,3 +66,48 @@ def nearest_conditional_match_gdf(
         right_matches = right_matches.merge(left[match_cols], how="inner", on=match_cols)
 
     return right_matches
+
+
+def nearest_conditional_match(
+    left_vector_file: Path,
+    right_vector_file: Path,
+    output_file: Path,
+    output_format: str = "GeoJSON",
+    distance_col: str = "distance",
+    match_cols: Optional[Iterable[str]] = None,
+    max_distance: Optional[float] = None,
+) -> None:
+    """Find rows from the right vector file that match left based on given criteria
+
+    Parameters
+    ----------
+    left_vector_file : Path
+        Path to "left" vector dataset. Must be readable by OGR.
+        Should be the same CRS as right.
+    right_vector_file : Path
+        Path to "right" vector dataset. Must be readable by OGR.
+        Should be same CRS as right
+    output_file : Path
+        Path to output file (vector) that will be created with the matching
+        data from the ``right`` dataset.
+    output_format : str
+        The output format (or Driver) to use when writing ``output_file``.
+        See also `fiona.support_drivers`.
+    distance_col : str, optional
+        Column to store the distances, by default "distance".
+        Units will the same as the CRS.
+    match_cols : Optional[Iterable[str]], optional
+        Optional list of extra columns to match, by default None.
+        These columns must exist in both ``left`` and ``right``.
+    max_distance : Optional[float], optional
+        Maximum distance for the spatial join, by default None.
+        Units are the same as the CRS so care should be taken if geographic
+        coordinate systems are used.
+    """
+    nearest_conditional_match_gdf(
+        left=gpd.read_file(left_vector_file),
+        right=gpd.read_file(right_vector_file),
+        distance_col=distance_col,
+        match_cols=match_cols,
+        max_distance=max_distance,
+    ).to_file(output_file, driver=output_format)
