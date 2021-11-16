@@ -16,7 +16,7 @@ pip install .
 A number of scripts will be available at the CLI or can be imported for use in python. The CLI tools can be accessed after installing the package with:
 
 ```shell
-arcpy2foss --help
+a2f --help
 ```
 
 Currently converted tools include:
