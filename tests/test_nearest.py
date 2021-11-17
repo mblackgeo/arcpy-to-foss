@@ -46,13 +46,14 @@ def test_nearest_conditional_match_gdf(gdf1: gpd.GeoDataFrame, gdf2: gpd.GeoData
     out = nearest_conditional_match_gdf(left=gdf1, right=gdf2)
     assert len(out) == 2
     assert "distance" in out.columns
+    assert ["river_tees", "hartlepool"] == out.id_right.tolist()
 
 
 def test_nearest_conditional_match_gdf_with_max_distance(gdf1: gpd.GeoDataFrame, gdf2: gpd.GeoDataFrame):
     # Only 1 should be returned that is within the distance
     out = nearest_conditional_match_gdf(left=gdf1, right=gdf2, max_distance=0.05)
     assert len(out) == 1
-    assert out.id.iloc[0] == "river_tees"
+    assert out.id_right.iloc[0] == "river_tees"
 
 
 def test_nearest_conditional_match_gdf_with_match_cols(gdf1: gpd.GeoDataFrame, gdf2: gpd.GeoDataFrame):
@@ -60,7 +61,7 @@ def test_nearest_conditional_match_gdf_with_match_cols(gdf1: gpd.GeoDataFrame, g
     # however only 1 row will match based on using "match_cols"
     out = nearest_conditional_match_gdf(left=gdf1, right=gdf2, match_cols=["col1"])
     assert len(out) == 1
-    assert out.id.iloc[0] == "hartlepool"
+    assert out.id_right.iloc[0] == "hartlepool"
 
 
 def test_nearest_conditional_match_gdf_with_match_cols_and_distance(gdf1: gpd.GeoDataFrame, gdf2: gpd.GeoDataFrame):
