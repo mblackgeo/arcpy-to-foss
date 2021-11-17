@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import List, Optional
 
 import geopandas as gpd
@@ -13,9 +12,9 @@ app = typer.Typer()
 
 @app.command()
 def datasets_to_extent(
-    input_files: List[Path] = typer.Argument(default=None, help="List of 1 or more raster and/or vector datasets"),
-    output_file: Path = typer.Argument(default=None, help="Path to output vector file"),
-    output_format: str = typer.Argument(default="GeoJSON", help="Output vector file format"),
+    input_files: List[str] = typer.Argument(..., help="List of 1 or more raster and/or vector datasets"),
+    output_file: str = typer.Option(..., help="Path to output vector file"),
+    output_format: str = typer.Option(default="GeoJSON", help="Output vector file format"),
 ):
     """
     Create vector of dataset extents.
@@ -28,8 +27,8 @@ def datasets_to_extent(
 
 @app.command()
 def vector_to_gpx(
-    input_file: Path = typer.Argument(default=None, help="Input vector file to convert to GPX"),
-    output_file: Path = typer.Argument(default=None, help="Ouput path for GPX file"),
+    input_file: str = typer.Argument(..., help="Input vector file to convert to GPX"),
+    output_file: str = typer.Argument(..., help="Ouput path for GPX file"),
 ):
     """
     Convert a vector file to GPX.
@@ -43,13 +42,13 @@ def vector_to_gpx(
 
 @app.command()
 def conditional_spatial_join(
-    left_vector_file: Path = typer.Argument(default=None, help="Source vector file"),
-    right_vector_file: Path = typer.Argument(default=None, help="Vector file to match with source"),
-    output_file: Path = typer.Argument(default=None, help="Path to output vector file"),
-    output_format: str = typer.Argument(default="GeoJSON", help="Output vector file format"),
-    distance_col: Optional[str] = typer.Argument(default="distance", help="Name of field to store distance"),
-    join_on: Optional[List[str]] = typer.Argument(default=None, help="Attributes to match, must be in both datasets"),
-    max_distance: Optional[float] = typer.Argument(default=None, help="Distance threshold in same units as vector CRS"),
+    left: str = typer.Option(..., help="Source vector file"),
+    right: str = typer.Option(..., help="Vector file to match with source"),
+    output_file: str = typer.Option(..., help="Path to output vector file"),
+    output_format: str = typer.Option(default="GeoJSON", help="Output vector file format"),
+    distance_col: Optional[str] = typer.Option(default="distance", help="Name of field to store distance"),
+    join_on: Optional[List[str]] = typer.Option(default=None, help="Attributes to match, must be in both datasets"),
+    max_distance: Optional[float] = typer.Option(default=None, help="Distance threshold in same units as vector CRS"),
 ):
     """
     Conditional spatial join between left/right based on distance and/or attributes
@@ -60,8 +59,8 @@ def conditional_spatial_join(
     attributes of the data (attributes must be in both left/right).
     """
     out = conditional_sjoin(
-        left=gpd.read_file(left_vector_file),
-        right=gpd.read_file(right_vector_file),
+        left=gpd.read_file(left),
+        right=gpd.read_file(right),
         distance_col=distance_col,
         join_on=join_on,
         max_distance=max_distance,
