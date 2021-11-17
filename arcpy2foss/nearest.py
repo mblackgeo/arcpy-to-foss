@@ -1,3 +1,4 @@
+from functools import reduce
 from pathlib import Path
 from typing import Iterable, Optional
 
@@ -42,30 +43,40 @@ def nearest_conditional_match_gdf(
     gpd.GeoDataFrame
         GeoDataFrame containing the matching rows from ``right``.
     """
-    # Find matches from the right gdf that are within the max distance
-    right_matches = right.sjoin_nearest(
-        left,
-        lsuffix="keep",
-        rsuffix="drop",
-        how="left",
+    # Use the spatial index to join all of the "right" rows and calculate their
+    # distance with the "left" rows. Note that this needs to be a right join to
+    # include all matches with "left", however this loses the left geometry col
+    # which is added again below
+    matches = left.sjoin_nearest(
+        right,
+        lsuffix="left",
+        rsuffix="right",
+        how="right",
         max_distance=max_distance,
         distance_col=distance_col,
     )
 
-    # remove any duplicate columns (i.e. columns that were added from the left gdf)
-    cols_to_drop = [c for c in right_matches.columns if c.endswith("_drop")]
-    right_matches = right_matches.drop(columns=cols_to_drop).dropna(subset=[distance_col])
+    # If max_distance was set, because we did a right join there will still
+    # be rows present from in output that were greater than max distance
+    # however their distance value will be NaN so we can safely drop them
+    matches = matches.dropna(subset=[distance_col])
 
-    # rename the suffixed columns that should be kept (i.e. the original columns in the right gdf)
-    col_rename_map = {c: c.replace("_keep", "") for c in right_matches.columns if c.endswith("_keep")}
-    right_matches = right_matches.rename(columns=col_rename_map)
+    # remove the suffix from the left columns
+    col_rename_map = {c: c.replace("_left", "") for c in matches.columns}
+    matches = matches.rename(columns=col_rename_map)
 
-    # Additional filter based on matching values of specific columns if any are specified
-    # This is a standard pandas join that does not use geometry
+    # Add the "left" geometry back to the DataFrame
+    matches = matches.rename(columns={"geometry": "geometry_right"})
+    matches = matches.merge(left[["geometry"]].reset_index(), how="left", on=["index"])
+
+    # Additional filter based on matching equality of specific columns
+    # The matches DataFrame has the left and right columns (suffixed "_right")
+    # so we can just apply a boolean filter on these
     if match_cols:
-        right_matches = right_matches.merge(left[match_cols], how="inner", on=match_cols)
+        mask = reduce(lambda a, b: a & b, [matches[f"{c}"] == matches[f"{c}_right"] for c in match_cols])
+        matches = matches[mask].copy()
 
-    return right_matches
+    return matches
 
 
 def nearest_conditional_match(
