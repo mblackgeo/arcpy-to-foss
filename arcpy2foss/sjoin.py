@@ -7,7 +7,7 @@ import geopandas as gpd
 def conditional_sjoin(
     left: gpd.GeoDataFrame,
     right: gpd.GeoDataFrame,
-    distance_col: str = "distance",
+    distance_col: Optional[str] = "distance",
     max_distance: Optional[float] = None,
     join_on: Optional[Iterable[str]] = None,
 ) -> gpd.GeoDataFrame:
@@ -22,7 +22,7 @@ def conditional_sjoin(
         Left GeoDataFrame, should be same CRS as ``right``
     right : gpd.GeoDataFrame
         Right GeoDataFrame, should be same CRS as ``left``
-    distance_col : str
+    distance_col : str, optional
         Column to store the distances, by default "distance".
         Units will the same as the CRS of the source data.
     max_distance : Optional[float], optional
@@ -36,12 +36,13 @@ def conditional_sjoin(
     Returns
     -------
     gpd.GeoDataFrame
-        GeoDataFrame containing the matching rows from ``right``.
+        GeoDataFrame containing the rows ``left`` and matching rows from ``right``
+        where attributes from the ``right`` are added suffixed with `_right`.
     """
-    # Use the spatial index to join all of the "right" rows and calculate their
-    # distance with the "left" rows. Note that this needs to be a right join to
-    # include all matches with "left", however this loses the left geometry col
-    # which is added again below
+    # Perform a spatial join of the "right" rows and calculate their distance
+    # with the "left" rows. Note that this needs to be a right join to include
+    # all matches with "left", however this loses the left geometry column
+    # which is added again later
     matches = left.sjoin_nearest(
         right,
         lsuffix="left",
@@ -53,8 +54,8 @@ def conditional_sjoin(
 
     # If max_distance was set, because we did a right join there will still
     # be rows present from in output that were greater than max distance
-    # however their distance value will be NaN so we can safely drop them
-    matches = matches.dropna(subset=[distance_col])
+    # however their "_left" columns will be NaN so we can safely drop them
+    matches = matches.dropna(subset=[c for c in matches.columns if c.endswith("_left")])
 
     # remove the suffix from the left columns
     col_rename_map = {c: c.replace("_left", "") for c in matches.columns}
