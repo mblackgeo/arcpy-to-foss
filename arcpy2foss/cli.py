@@ -2,6 +2,7 @@ from typing import List, Optional
 
 import geopandas as gpd
 import typer
+from shapely import wkt
 
 from arcpy2foss.extent import extents_to_features
 from arcpy2foss.gpx import to_gpx
@@ -66,4 +67,6 @@ def conditional_spatial_join(
         max_distance=max_distance,
     )
 
+    # convert the geometry_right to WKT to allow it to be written to file
+    out["geometry_right"] = out.geometry_right.apply(wkt.dumps)
     out.to_file(output_file, driver=output_format)
