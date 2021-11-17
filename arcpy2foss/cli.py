@@ -52,7 +52,7 @@ def conditional_spatial_join(
     max_distance: Optional[float] = typer.Option(default=None, help="Distance threshold in same units as vector CRS"),
 ):
     """
-    Conditional spatial join between left/right based on distance and/or attributes
+    Conditional spatial join between left/right based on distance and/or attributes.
 
     This function will perform a "left" spatial join matching rows from "right"
     that are within the specified conditions. This can be based on a max_distance
