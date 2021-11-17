@@ -1,11 +1,12 @@
 from pathlib import Path
 from typing import List, Optional
 
+import geopandas as gpd
 import typer
 
 from arcpy2foss.extent import extents_to_features
 from arcpy2foss.gpx import to_gpx
-from arcpy2foss.nearest import nearest_conditional_match as ncm
+from arcpy2foss.sjoin import conditional_sjoin
 
 app = typer.Typer()
 
@@ -41,30 +42,29 @@ def vector_to_gpx(
 
 
 @app.command()
-def nearest_conditional_match(
+def conditional_spatial_join(
     left_vector_file: Path = typer.Argument(default=None, help="Source vector file"),
     right_vector_file: Path = typer.Argument(default=None, help="Vector file to match with source"),
     output_file: Path = typer.Argument(default=None, help="Path to output vector file"),
     output_format: str = typer.Argument(default="GeoJSON", help="Output vector file format"),
-    distance_col: str = typer.Argument(default="distance", help="Name of field to store distance"),
-    match_cols: Optional[List[str]] = typer.Argument(default=None, help="Fields to match, must be in both datasets"),
+    distance_col: Optional[str] = typer.Argument(default="distance", help="Name of field to store distance"),
+    join_on: Optional[List[str]] = typer.Argument(default=None, help="Attributes to match, must be in both datasets"),
     max_distance: Optional[float] = typer.Argument(default=None, help="Distance threshold in same units as vector CRS"),
 ):
     """
-    Match rows from ``right`` that are within max_distance and match specific columns of ``left``.
+    Conditional spatial join between left/right based on distance and/or attributes
 
-    This function will find all the rows in the ``right`` dataset that are
-    within the given ``max_distance`` of the geometries in ``left`` as well as
-    being able to conditionally join on any additional columns; i.e. rows are
-    returned from ``right`` if they are within the given ``max_distance`` AND
-    they also match the values in the specified ``match_cols``.
+    This function will perform a "left" spatial join matching rows from "right"
+    that are within the specified conditions. This can be based on a max_distance
+    value (same units as the CRS of the input data) and/or joining on one or more
+    attributes of the data (attributes must be in both left/right).
     """
-    return ncm(
-        left_vector_file=left_vector_file,
-        right_vector_file=right_vector_file,
-        output_file=output_file,
-        output_format=output_format,
+    out = conditional_sjoin(
+        left=gpd.read_file(left_vector_file),
+        right=gpd.read_file(right_vector_file),
         distance_col=distance_col,
-        match_cols=match_cols,
+        join_on=join_on,
         max_distance=max_distance,
     )
+
+    out.to_file(output_file, driver=output_format)
