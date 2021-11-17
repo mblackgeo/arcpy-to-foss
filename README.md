@@ -5,6 +5,8 @@ The code in this repository is converted from [ESRI's ArcPy examples repository]
 
 ## Installation
 
+A valid GDAL/OGR installation is required, this can be achieved using your package manager of choice (e.g. apt, brew, conda etc.). Once this is installed, clone the repository and install with pip:
+
 ```shell
 git clone git@github.com:mblackgeo/arcpy-to-foss.git
 cd arcpy-to-foss
