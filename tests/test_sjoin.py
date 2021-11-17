@@ -1,44 +1,19 @@
+import os
+
 import geopandas as gpd
 import pytest
-from shapely.geometry import Point
 
 from arcpy2foss.sjoin import conditional_sjoin
 
 
 @pytest.fixture
-def gdf1():
-    return gpd.GeoDataFrame(
-        [
-            {
-                "id": "riverside",
-                "col1": "a",
-                "col2": "b",
-                "geometry": Point(-1.2168849741005956, 54.57827957221454795),
-            },
-        ],
-        crs=4326,
-    )
+def gdf1(resources_dir: str):
+    return gpd.read_file(os.path.join(resources_dir, "sjoin_left.geojson"))
 
 
 @pytest.fixture
-def gdf2():
-    return gpd.GeoDataFrame(
-        [
-            {
-                "id": "river_tees",
-                "col1": "z",
-                "col2": "b",
-                "geometry": Point(-1.21279327075493448, 54.58131930464433168),
-            },
-            {
-                "id": "hartlepool",
-                "col1": "a",
-                "col2": "c",
-                "geometry": Point(-1.20634573821025537, 54.68589717425042807),
-            },
-        ],
-        crs=4326,
-    )
+def gdf2(resources_dir: str):
+    return gpd.read_file(os.path.join(resources_dir, "sjoin_right.geojson"))
 
 
 def test_nearest_conditional_match_gdf(gdf1: gpd.GeoDataFrame, gdf2: gpd.GeoDataFrame):
