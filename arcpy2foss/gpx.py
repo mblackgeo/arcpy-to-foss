@@ -18,7 +18,7 @@ def check_geometry(
     gdf : gpd.GeoDataFrame
         DataFrame to check
     valid_geom_types : Iterable[BaseGeometry], optional
-        Types of geometry that considered valid, by default (Point, LineString)
+        Types of geometry that considered valid, by default ("Point", "LineString")
     n_unique_geoms : int, optional
         Number of unique geometry types allowed (from ``valid_geom_types``), by default 1
 
@@ -49,7 +49,7 @@ def points_to_line(gdf: gpd.GeoDataFrame, groupby: Iterable[str]) -> gpd.GeoData
     gdf : gpd.GeoDataFrame
         GeoDataFrame containing points
     groupby : Iterable[str]
-        Column to group by (the 'first' element is retained)
+        Column(s) to group by
 
     Returns
     -------
@@ -103,7 +103,7 @@ def write_gpx(gdf: gpd.GeoDataFrame, output_file: Path) -> None:
     output_file : Path
         Output file path.
     """
-    # If we only have points then we can just get geopandas to write it out
+    # If we only have points then we can just get geopandas/fiona to write it out
     if "Point" in gdf.geometry.type.unique():
         gdf.to_file(output_file, driver="GPX")
 

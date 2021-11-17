@@ -53,8 +53,8 @@ def conditional_sjoin(
     )
 
     # If max_distance was set, because we did a right join there will still
-    # be rows present from in output that were greater than max distance
-    # however their "_left" columns will be NaN so we can safely drop them
+    # be rows present in output the that were greater than max distance
+    # however their "_left" columns will be NaN so we can drop them
     matches = matches.dropna(subset=[c for c in matches.columns if c.endswith("_left")])
 
     # remove the suffix from the left columns
