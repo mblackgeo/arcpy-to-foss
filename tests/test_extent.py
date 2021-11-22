@@ -13,7 +13,7 @@ def test_get_extent_vector_wgs84(resources_dir: str):
     fn = os.path.join(resources_dir, "vector.geojson")
     result = get_extent(fn, as_wgs84=True)
     expected = box(9.94, 53.53, 9.95, 53.54)
-    assert result.almost_equals(expected, decimal=2) is True
+    assert result.almost_equals(expected, decimal=2)
 
 
 def test_get_extent_vector_non_wgs84(resources_dir: str):
@@ -21,7 +21,7 @@ def test_get_extent_vector_non_wgs84(resources_dir: str):
     fn = os.path.join(resources_dir, "vector_epsg32632.gpkg")
     result = get_extent(fn, as_wgs84=True)
     expected = box(9.94, 53.53, 9.95, 53.54)
-    assert result.almost_equals(expected, decimal=2) is True
+    assert result.almost_equals(expected, decimal=2)
 
 
 def test_get_extent_raster_wgs84(resources_dir: str):
@@ -29,7 +29,7 @@ def test_get_extent_raster_wgs84(resources_dir: str):
     fn = os.path.join(resources_dir, "oneband.tif")
     result = get_extent(fn, as_wgs84=True)
     expected = box(9.93, 53.53, 9.96, 53.54)
-    assert result.almost_equals(expected, decimal=2) is True
+    assert result.almost_equals(expected, decimal=2)
 
 
 def test_get_extent_raster_non_wgs84(resources_dir: str):
@@ -37,7 +37,7 @@ def test_get_extent_raster_non_wgs84(resources_dir: str):
     fn = os.path.join(resources_dir, "raster.tif")
     result = get_extent(fn, as_wgs84=True)
     expected = box(9.93, 53.53, 9.96, 53.54)
-    assert result.almost_equals(expected, decimal=2) is True
+    assert result.almost_equals(expected, decimal=2)
 
 
 def test_get_extent_invalid_file(resources_dir: str):

@@ -17,7 +17,7 @@ def test_to_gpx_points(resources_dir: str, tmp_path: Path):
     assert os.path.exists(out_fn)
 
     out = gpd.read_file(out_fn)
-    assert isinstance(out, gpd.GeoDataFrame) is True
+    assert isinstance(out, gpd.GeoDataFrame)
     assert len(out) == 4
     assert len(out.columns) == 24
 
@@ -37,6 +37,6 @@ def test_to_gpx_points_to_track(resources_dir: str, tmp_path: Path):
     assert os.path.exists(out_fn)
 
     out = gpd.read_file(out_fn, layer="tracks")
-    assert isinstance(out, gpd.GeoDataFrame) is True
+    assert isinstance(out, gpd.GeoDataFrame)
     assert len(out) == 1
-    assert isinstance(out.geometry.iloc[0], MultiLineString) is True
+    assert isinstance(out.geometry.iloc[0], MultiLineString)
